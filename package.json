@@ -1,0 +1,14 @@
+{
+  "name": "muser-table",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc -p ./tsconfig.build.json"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "muser": "^1.3.0-3"
+  }
+}
