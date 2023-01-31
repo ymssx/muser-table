@@ -16,6 +16,7 @@ export type TableDataConfig = {
 export interface TableConfig {
   stripe?: boolean;
   border?: boolean;
+  rowHeight?: number;
 }
 
 export interface TableDataItem {

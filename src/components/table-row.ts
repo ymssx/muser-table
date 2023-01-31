@@ -1,11 +1,12 @@
 import { tableConfigFormatter } from '../lib/config';
 import { Element, useElement, Brush, ElementConfig } from 'muser';
-import { TableDataConfig } from '../const/common';
+import { TableConfig, TableDataConfig } from '../const/common';
 import { getTableWidth } from '../lib/config';
 
 interface RenderRowProps {
   row: { [key: string]: number | string };
   config: TableDataConfig;
+  tableConfig: TableConfig;
   line: number;
   activate: boolean;
   onActivate: Function;
@@ -40,11 +41,11 @@ export default class RenderRow extends Element<RenderRowProps> {
 
   render({ props, state }: RenderRow) {
     const PADDING = 10;
-    const HEIGHT = 40;
 
     return (brush: Brush) => {
-      const { row, config: originConfig, line, activate: defaultActivate } = props;
+      const { row, config: originConfig, line, activate: defaultActivate, tableConfig } = props;
       const { activate: eventActivate } = state;
+      const { rowHeight: HEIGHT = 40 } = tableConfig;
       const rowConfig = tableConfigFormatter(originConfig);
       const tableWidth = getTableWidth(originConfig);
 
@@ -57,17 +58,19 @@ export default class RenderRow extends Element<RenderRowProps> {
       const lines = [];
       for (const key in row) {
         let data = row[key];
+        lines.push([rowConfig[key]?.left + 0.5, 0, rowConfig[key]?.left + 0.5, HEIGHT]);
 
         // data formatter
         const formatter = rowConfig[key]?.formatter;
         if (formatter instanceof Function) {
-          const res = formatter(data);
+          const res = formatter(row);
           // if it's an Element
           if (res instanceof Object && res.element) {
             const { element: elementClass, config, props } = res;
             const element = useElement(elementClass, { ...config, key: `${key}-${line}-c` });
             element({ activate, ...props })
              .paste({ x: PADDING + rowConfig[key]?.left, y: 0 });
+
             continue;
           }
           data = res;
@@ -82,8 +85,6 @@ export default class RenderRow extends Element<RenderRowProps> {
             textBaseline: 'middle',
           },
         );
-
-        lines.push([rowConfig[key]?.left + 0.5, 0, rowConfig[key]?.left + 0.5, HEIGHT]);
       }
       lines.push([0, HEIGHT, '100%', HEIGHT]);
 
@@ -121,7 +122,7 @@ export const RenderRowFunc = function(props: RenderRowFuncProps) {
       // data formatter
       const formatter = rowConfig[key]?.formatter;
       if (formatter instanceof Function) {
-        const res = formatter(data);
+        const res = formatter(row);
         // if it's an Element
         if (res instanceof Object && res.element) {
           const { element: elementClass, config, props } = res;

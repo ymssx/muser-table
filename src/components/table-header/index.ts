@@ -3,11 +3,13 @@ import Arrow from './sort-arrow';
 import { tableConfigFormatter } from '../../lib/config';
 import { TableGridFunc } from '../table-grid';
 import { getTableWidth } from '../../lib/config';
+import { TableDataConfig } from '../../const/common';
 
 interface RenderHeaderProps {
-  onIncreaseSort: Function;
-  onDecreaseSort: Function;
-  onCancel: Function;
+  onIncreaseSort?: Function;
+  onDecreaseSort?: Function;
+  onCancel?: Function;
+  config: TableDataConfig;
 }
 
 export default class RenderHeader extends Element<RenderHeaderProps> {
@@ -24,7 +26,7 @@ export default class RenderHeader extends Element<RenderHeaderProps> {
     }
   }
 
-  render({ props }: any) {
+  render({ props }: RenderHeader) {
     const PADDING = 10;
     const HEIGHT = 40;
 

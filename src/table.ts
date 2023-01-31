@@ -17,7 +17,6 @@ export default class TableElement extends Element<TableProps> {
   }
 
   render({ props }: TableElement) {
-    const HEIGHT = 40;
     let renderedRange =0;
 
     const handleActivate = (line: number) => {
@@ -45,9 +44,10 @@ export default class TableElement extends Element<TableProps> {
       // 滚动插入
       () => {
         const start = performance.now();
-        const { data: tableData, dataConfig, scrollTop = 0 } = props;
+        const { data: tableData, dataConfig, config, scrollTop = 0 } = props;
+        const { rowHeight: HEIGHT = 40 } = config;
 
-        const visibleRange = Math.ceil(scrollTop / HEIGHT) + 20;
+        const visibleRange = Math.ceil(scrollTop / HEIGHT) + Math.min(20, tableData.length);
         if (visibleRange <= renderedRange + 5) {
           return;
         }
@@ -65,6 +65,7 @@ export default class TableElement extends Element<TableProps> {
             row,
             line: index,
             config: dataConfig,
+            tableConfig: config,
             activate: false,
             onActivate: () => handleActivate(index),
           })
